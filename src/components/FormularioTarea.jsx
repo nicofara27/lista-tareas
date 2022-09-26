@@ -9,7 +9,13 @@ const FormularioTarea = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setArregloTareas([...arregloTareas, tarea]);
-    setTarea('')
+    setTarea("");
+  };
+  
+  const borrarTarea = (nombre) => {
+    let arregloModificado = arregloTareas.filter((item) => item !== nombre);
+  
+    setArregloTareas(arregloModificado);
   };
 
   return (
@@ -27,9 +33,10 @@ const FormularioTarea = () => {
           </Button>
         </Form.Group>
       </Form>
-      <ListaTarea />
+      <ListaTarea arregloTareas={arregloTareas} borrarTarea={borrarTarea}/>
     </div>
   );
 };
+
 
 export default FormularioTarea;
