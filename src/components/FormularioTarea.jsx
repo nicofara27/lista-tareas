@@ -31,7 +31,7 @@ const FormularioTarea = () => {
         );
       }
     );
-  }, [tareas]);
+  }, []);
 
   const onSubmit = (datos)=> {
     crearTareaApi(datos).then((respuesta) => {
