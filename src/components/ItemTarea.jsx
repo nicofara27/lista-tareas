@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, ListGroup } from "react-bootstrap";
 import { borrarTareaApi, consultarTareasApi } from "./helpers/queries";
 import Swal from "sweetalert2";

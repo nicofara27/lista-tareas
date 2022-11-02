@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import ListaTarea from "./ListaTarea";
-import {
-  crearTareaApi,
-  consultarTareasApi
-} from "./helpers/queries";
+import { crearTareaApi, consultarTareasApi } from "./helpers/queries";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 
@@ -14,8 +11,11 @@ const FormularioTarea = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
+    setFocus,
   } = useForm();
+
+  setFocus("nombreTarea");
 
   useEffect(() => {
     consultarTareasApi().then(
@@ -33,7 +33,7 @@ const FormularioTarea = () => {
     );
   }, []);
 
-  const onSubmit = (datos)=> {
+  const onSubmit = (datos) => {
     crearTareaApi(datos).then((respuesta) => {
       if (respuesta.status === 201) {
         Swal.fire(
@@ -42,6 +42,9 @@ const FormularioTarea = () => {
           "success"
         );
         reset();
+        consultarTareasApi().then((respuesta) => {
+          setTareas(respuesta);
+        });
       } else {
         Swal.fire("Ocurrio un error", "La Tarea no pudo ser creada", "error");
       }
@@ -52,15 +55,19 @@ const FormularioTarea = () => {
     <div>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group className="mb-3 d-flex " controlId="formBasicEmail">
-          <Form.Control type="text" placeholder="Ingrese una tarea" {...register("nombreTarea", {
-              required: "El nombre de la tarea es obligatorio"
-            })}/>
+          <Form.Control
+            type="text"
+            placeholder="Ingrese una tarea"
+            {...register("nombreTarea", {
+              required: "El nombre de la tarea es obligatorio",
+            })}
+          />
           <Button variant="primary" type="submit">
             Enviar
           </Button>
         </Form.Group>
       </Form>
-      <ListaTarea tareas={tareas} setTareas={setTareas}/>
+      <ListaTarea tareas={tareas} setTareas={setTareas} />
     </div>
   );
 };

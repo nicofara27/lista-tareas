@@ -9,7 +9,6 @@ export const crearTareaApi = async (tarea) => {
             },
             body: JSON.stringify(tarea),
           });
-          console.log(tarea)
           return respuesta;
     } catch (error) {
         console.log(error)
@@ -31,7 +30,7 @@ export const consultarTareasApi = async () => {
 export const borrarTareaApi = async (id) => {
     try {
         const respuesta = await fetch(URL+"/"+id, {
-            method:"DELETE"
+            method: "DELETE",
         });
         return respuesta;
     } catch (error) {
