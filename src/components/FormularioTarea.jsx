@@ -1,49 +1,68 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import ListaTarea from "./ListaTarea";
+import {
+  crearTareaApi,
+  consultarTareasApi
+} from "./helpers/queries";
+import Swal from "sweetalert2";
+import { useForm } from "react-hook-form";
 
 const FormularioTarea = () => {
+  const [tareas, setTareas] = useState([]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
 
-  const tareasLocalStorage = JSON.parse(localStorage.getItem('listaTareas')) || [];
-  const [tarea, setTarea] = useState("");
-  const [arregloTareas, setArregloTareas] = useState(tareasLocalStorage);
+  useEffect(() => {
+    consultarTareasApi().then(
+      (respuesta) => {
+        setTareas(respuesta);
+      },
+      (reason) => {
+        console.log(reason);
+        Swal.fire(
+          "Ocurrio un error",
+          "Intentelo nuevamente mas tarde",
+          "error"
+        );
+      }
+    );
+  }, [tareas]);
 
-  //Ciclo de vida del componente
-  useEffect(()=>{
-    localStorage.setItem('listaTareas', JSON.stringify(arregloTareas))
-  })
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setArregloTareas([...arregloTareas, tarea]);
-    setTarea("");
-  };
-  
-  const borrarTarea = (nombre) => {
-    let arregloModificado = arregloTareas.filter((item) => item !== nombre);
-  
-    setArregloTareas(arregloModificado);
+  const onSubmit = (datos)=> {
+    crearTareaApi(datos).then((respuesta) => {
+      if (respuesta.status === 201) {
+        Swal.fire(
+          "Tarea creada",
+          "La Tarea fue creada exitosamente",
+          "success"
+        );
+        reset();
+      } else {
+        Swal.fire("Ocurrio un error", "La Tarea no pudo ser creada", "error");
+      }
+    });
   };
 
   return (
     <div>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group className="mb-3 d-flex " controlId="formBasicEmail">
-          <Form.Control
-            type="text"
-            placeholder="Ingrese una tarea"
-            onChange={(e) => setTarea(e.target.value)}
-            value={tarea}
-          />
+          <Form.Control type="text" placeholder="Ingrese una tarea" {...register("nombreTarea", {
+              required: "El nombre de la tarea es obligatorio"
+            })}/>
           <Button variant="primary" type="submit">
             Enviar
           </Button>
         </Form.Group>
       </Form>
-      <ListaTarea arregloTareas={arregloTareas} borrarTarea={borrarTarea}/>
+      <ListaTarea tareas={tareas} setTareas={setTareas}/>
     </div>
   );
 };
-
 
 export default FormularioTarea;
