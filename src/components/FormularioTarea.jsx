@@ -60,8 +60,19 @@ const FormularioTarea = () => {
             placeholder="Ingrese una tarea"
             {...register("nombreTarea", {
               required: "El nombre de la tarea es obligatorio",
+              minLength: {
+                value: 4,
+                message: "La cantidad de caracteres minima es de 4"
+              },
+              maxLength: {
+                value: 150,
+                message: "La cantidad de caracteres maxima es de 150"
+              }
             })}
           />
+          <Form.Text className="text-danger">
+            {errors.nombreTarea?.message}
+          </Form.Text>
           <Button variant="primary" type="submit">
             Enviar
           </Button>
