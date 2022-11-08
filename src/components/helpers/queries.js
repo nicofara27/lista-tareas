@@ -16,6 +16,25 @@ export const crearTareaApi = async (tarea) => {
     }
 };
 
+export const editarTareaApi = async (id, tarea) => {
+
+    try {
+      const respuesta = await fetch(URL + "/" + id, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tarea),
+      });
+      console.log(respuesta)
+      console.log(respuesta.body)
+      return respuesta;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
 export const consultarTareasApi = async () => {
     try {
         const respuesta = await fetch(URL);
